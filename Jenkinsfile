@@ -1,10 +1,6 @@
 pipeline {
   agent any
 
-    tools {
-        nodejs 'node-18'  
-    }
-
   environment {
     VERCEL_PROJECT_NAME = 'DevOp16_SImple-Nodejs' 
     VERCEL_TOKEN = credentials('devop16-vercel-latest') 
