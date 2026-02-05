@@ -1,9 +1,10 @@
 pipeline {
 
   environment {
-    VERCEL_PROJECT_NAME = 'DevOp16_SImple-Nodejs' 
+    // แก้เป็นตัวเล็ก และใช้ขีดกลาง (-) แทน Underscore (_)
+    VERCEL_PROJECT_NAME = 'devop16-simple-nodejs' 
     VERCEL_TOKEN = credentials('devop16-vercel-latest') 
-  }
+}
   
    agent {
     kubernetes {
