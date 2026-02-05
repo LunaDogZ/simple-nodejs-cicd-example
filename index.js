@@ -1,5 +1,5 @@
 const express = require('express');
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3000;
 const app = express();
 
 var SplitFactory = require('@splitsoftware/splitio').SplitFactory;
@@ -11,7 +11,7 @@ var factory = SplitFactory({
 });
 var splitClient = factory.client();
 
-var getTreatment = function() {
+var getTreatment = function () {
     return splitClient.getTreatment('ANONYMOUS_USER', 'hello-treatment');
 }
 
@@ -31,6 +31,6 @@ app.get('/', (req, res) => {
     }
 });
 
-app.listen(port, () => { console.log('Our App Is Up And Running!'); });
+app.listen(port, '0.0.0.0', () => { console.log('Our App Is Up And Running!'); });
 
 module.exports = app
