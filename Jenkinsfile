@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+        docker { 
+            image 'node:18-alpine'  
+            args '-u root:root'     
+        }
+    }
 
   environment {
     VERCEL_PROJECT_NAME = 'DevOp16_SImple-Nodejs' 
