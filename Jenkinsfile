@@ -1,35 +1,62 @@
 pipeline {
-  agent any
 
   environment {
     VERCEL_PROJECT_NAME = 'DevOp16_SImple-Nodejs' 
     VERCEL_TOKEN = credentials('devop16-vercel-latest') 
   }
   
+   agent {
+    kubernetes {
+      // This YAML defines the "Docker Container" you want to use
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        spec:
+          containers:
+          - name: my-builder  # We will refer to this name later
+            image: node:20-alpine
+            command:
+            - cat
+            tty: true
+      '''
+    }
+  }
   stages {
-    stage('Install Dependencies') {
+    stage('Test npm') {
       steps {
-        sh 'npm install' 
+        container('my-builder') {
+          sh 'npm --version'
+          sh 'node --version'
+        }
       }
     }
-    
-    
-    stage('Test') {
+    stage('Build') {
       steps {
-        sh 'npm test' 
+        container('my-builder') {
+          sh 'npm ci'
+          //sh 'npm run build'
+        }
       }
     }
-
-    stage('Deploy to Vercel') {
+    stage('Test Build') {
       steps {
-        sh 'npm install -g vercel@latest'
-        
-        sh '''
-          vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-          vercel build --prod --token=$VERCEL_TOKEN
-          vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
-        '''
+        container('my-builder') {
+          sh 'npm run test'
+        }
       }
     }
+    stage('Deploy') {
+      steps {
+        container('my-builder') {
+          sh 'npm install -g vercel@latest'
+          // Deploy using token-only (non-interactive)
+          sh '''
+            vercel link --project $VERCEL_PROJECT_NAME --token $VERCEL_TOKEN --yes
+            vercel --token $VERCEL_TOKEN --prod --confirm
+          '''
+        }
+      }
+    }
+ 
   }
 }
