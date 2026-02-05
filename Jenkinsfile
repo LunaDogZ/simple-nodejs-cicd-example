@@ -4,13 +4,6 @@ pipeline {
     VERCEL_TOKEN = credentials('DevOp16-vercel-latest') 
   }
   
-  agent {
-    docker {
-      image 'node:20-alpine'
-      args '-u root' 
-    }
-  }
-
   stages {
     stage('Install Dependencies') {
       steps {
